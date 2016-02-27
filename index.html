@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <title>IAT 443 Chat Example</title>
+  </head>
+  <body>
+    <div>
+      <input id='text-input' type='text'>
+    </div>
+    <div id='container'></div>
+
+    <script src='jquery.js'></script>
+    <script src='https://lit-shelf-70213.herokuapp.com/socket.io/socket.io.js'></script>
+    <script>
+    var socket = io('https://lit-shelf-70213.herokuapp.com');
+    $(function () {
+      var $container = $('#container');
+      var $textInput = $('#text-input');
+
+      $textInput.keypress(function (e) {
+        var ENTER_KEY_VALUE = 13;
+        var textValue = $textInput.val().trim();
+        if (e.which === ENTER_KEY_VALUE && textValue.length > 0) {
+          socket.emit('client message', textValue);
+          $textInput.val('');
+        }
+      });
+
+      socket.on('server broadcast', function (msg) {
+        $container.append($('<div>' + msg + '</div>'));
+      });
+    });
+    </script>
+  </body>
+</html>
